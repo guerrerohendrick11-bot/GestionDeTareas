@@ -1,0 +1,9 @@
+# Visual Studio
+.vs/
+
+# Build de .NET
+bin/
+obj/
+
+# Archivos de configuración locales
+appsettings.Development.json
