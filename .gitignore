@@ -1,9 +1,26 @@
 # Visual Studio
 .vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-# Build de .NET
+# Build results
 bin/
 obj/
 
-# Archivos de configuración locales
-appsettings.Development.json
+# .NET
+*.dll
+*.exe
+*.pdb
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rider / VS Code
+.idea/
+.vscode/
