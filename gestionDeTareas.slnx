@@ -3,4 +3,5 @@
     <File Path=".gitignore" />
   </Folder>
   <Project Path="gestionDeTareas/gestionDeTareas.csproj" />
+  <Project Path="GestionDeTareasBlazor/GestionDeTareasBlazor.csproj" Id="2973454b-197a-4f10-a2af-ad2ff6dc3608" />
 </Solution>

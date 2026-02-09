@@ -1,0 +1,71 @@
+﻿@using GestionDeTareas.Blazor.Services
+@using GestionDeTareasBlazor.Models
+
+@page "/tareas"
+@inject TareaApiService TareaService
+
+<h3 class="mb-3">📋 Lista de Tareas</h3>
+
+@if (tareas == null)
+{
+    <p>Cargando...</p>
+}
+else if (!tareas.Any())
+{
+    <p>No hay tareas registradas.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in tareas)
+            {
+                <tr>
+                    <td>@t.Titulo</td>
+                    <td>
+                        <span class="badge @GetEstadoClass(t.Estado)">
+                            @GetEstadoTexto(t.Estado)
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<TareasDto>? tareas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tareas = await TareaService.GetTareasAsync();
+    }
+
+    private string GetEstadoClass(EstadoTarea estado)
+    {
+        return estado switch
+        {
+            EstadoTarea.Pendiente => "bg-secondary",
+            EstadoTarea.EnProceso => "bg-warning text-dark",
+            EstadoTarea.Completada => "bg-success",
+            _ => "bg-dark"
+        };
+    }
+
+    private string GetEstadoTexto(EstadoTarea estado)
+    {
+        return estado switch
+        {
+            EstadoTarea.Pendiente => "Pendiente 🕒",
+            EstadoTarea.EnProceso => "En proceso ⚙️",
+            EstadoTarea.Completada => "Completada ✅",
+            _ => "Desconocido"
+        };
+    }
+}
