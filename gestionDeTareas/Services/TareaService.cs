@@ -53,7 +53,8 @@ namespace gestionDeTareas.Services
                 Titulo = dto.Titulo,
                 Descripcion = dto.Descripcion,
                 Estado = dto.Estado,
-                FechaVencimiento = dto.FechaVencimiento
+                FechaVencimiento = dto.FechaVencimiento,
+                FechaCreacion = DateTime.Now
             };
 
             _context.Tareas.Add(tarea);

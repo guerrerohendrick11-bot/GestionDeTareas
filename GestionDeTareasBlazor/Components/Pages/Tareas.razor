@@ -1,10 +1,57 @@
 ﻿@using GestionDeTareas.Blazor.Services
 @using GestionDeTareasBlazor.Models
+@using GestionDeTareasBlazor.Models.Dto
 
 @page "/tareas"
 @inject TareaApiService TareaService
+@rendermode InteractiveServer
 
 <h3 class="mb-3">📋 Lista de Tareas</h3>
+
+<EditForm Model="nuevaTarea"
+          OnValidSubmit="GuardarTarea"
+          FormName="crearTarea">
+
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Título</label>
+        <InputText class="form-control"
+                   @bind-Value="nuevaTarea.Titulo" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <InputText class="form-control"
+                   @bind-Value="nuevaTarea.Descripcion" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Estado</label>
+        <InputSelect class="form-select"
+                     @bind-Value="nuevaTarea.Estado">
+            <option value="0">Pendiente</option>
+            <option value="0">Pendiente</option>
+            <option value="1">En Proceso</option>
+            <option value="2">Completada</option>
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Fecha Vencimiento</label>
+        <InputDate class="form-control"
+                   @bind-Value="nuevaTarea.FechaVencimiento" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Guardar
+    </button>
+
+</EditForm>
+
+
+
 
 @if (tareas == null)
 {
@@ -40,7 +87,8 @@ else
 }
 
 @code {
-    private List<TareasDto>? tareas;
+    private TareaCreateDto nuevaTarea = new();
+    private List<TareaCreateDto>? tareas;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,10 +110,43 @@ else
     {
         return estado switch
         {
-            EstadoTarea.Pendiente => "Pendiente 🕒",
+            EstadoTarea.Pendiente => "Pendiente 🕒😊",
             EstadoTarea.EnProceso => "En proceso ⚙️",
-            EstadoTarea.Completada => "Completada ✅",
+            EstadoTarea.Completada => "Completada ",
             _ => "Desconocido"
         };
     }
+
+
+
+    private async Task GuardarTarea()
+    {
+        if (string.IsNullOrWhiteSpace(nuevaTarea.Titulo))
+            return;
+
+        var exito = await TareaService.CreateTareaAsync(nuevaTarea);
+
+        if (exito)
+        {
+            tareas = await TareaService.GetTareasAsync();
+            nuevaTarea = new TareaCreateDto();
+        }
+        else
+        {
+            Console.WriteLine("Error al guardar la tarea");
+        }
+    }
+
+
+
+    // private async Task GuardarTarea()
+    // {
+    //     if (string.IsNullOrWhiteSpace(nuevaTarea.Titulo))
+    //     {
+    //         return;
+    //     }
+    //     await TareaService.CreateTareaAsync(nuevaTarea);
+    //     tareas = await TareaService.GetTareasAsync();
+    //     nuevaTarea = new TareasDto();
+    // }
 }
