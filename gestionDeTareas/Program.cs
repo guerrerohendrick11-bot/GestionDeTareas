@@ -1,5 +1,6 @@
 using gestionDeTareas.Data;
 using gestionDeTareas.Services;
+using gestionDeTareas.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ?? Services
 builder.Services.AddScoped<ITareaService, TareaService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 

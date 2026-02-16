@@ -1,6 +1,4 @@
-﻿using gestionDeTareas.Entity;
-
-namespace gestionDeTareas.Entidades
+﻿namespace gestionDeTareas.Entidades
 {
     public class Tarea
     {
@@ -12,11 +10,12 @@ namespace gestionDeTareas.Entidades
 
         public EstadoTarea Estado { get; set; }
 
-        public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
+        public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
         public DateTime? FechaVencimiento { get; set; }
 
-        public int UsuarioId { get; set; }
-            public Usuario Usuario { get; set; } 
+        public int? UsuarioId { get; set; }
+
+        public Usuario? Usuario { get; set; }
     }
 }
