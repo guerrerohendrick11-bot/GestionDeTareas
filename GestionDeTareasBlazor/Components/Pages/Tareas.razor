@@ -119,34 +119,17 @@ else
 
 
 
+ 
+
+
     private async Task GuardarTarea()
     {
         if (string.IsNullOrWhiteSpace(nuevaTarea.Titulo))
+        {
             return;
-
-        var exito = await TareaService.CreateTareaAsync(nuevaTarea);
-
-        if (exito)
-        {
-            tareas = await TareaService.GetTareasAsync();
-            nuevaTarea = new TareaCreateDto();
         }
-        else
-        {
-            Console.WriteLine("Error al guardar la tarea");
-        }
+        await TareaService.CreateTareaAsync(nuevaTarea);
+        tareas = await TareaService.GetTareasAsync();
+        nuevaTarea = new TareaCreateDto();
     }
-
-
-
-    // private async Task GuardarTarea()
-    // {
-    //     if (string.IsNullOrWhiteSpace(nuevaTarea.Titulo))
-    //     {
-    //         return;
-    //     }
-    //     await TareaService.CreateTareaAsync(nuevaTarea);
-    //     tareas = await TareaService.GetTareasAsync();
-    //     nuevaTarea = new TareasDto();
-    // }
 }
