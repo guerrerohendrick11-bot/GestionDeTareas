@@ -1,7 +1,56 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<div class="container mt-5">
 
-<h1>Hello, world!</h1>
+    <!-- HERO SECTION -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">🚀 Bienvenido al Gestor de Tareas</h1>
+        <p class="lead text-muted">
+            Organiza tus actividades, mejora tu productividad y cumple tus metas.
+        </p>
 
-Welcome to your new app.
+        <a href="/tareas" class="btn btn-primary btn-lg mt-3">
+            📋 Ver Tareas
+        </a>
+    </div>
+
+    <!-- CARDS -->
+    <div class="row text-center">
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">📝 Crear Tareas</h5>
+                    <p class="card-text">
+                        Agrega nuevas tareas con fecha y estado.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">⚙️ Administrar</h5>
+                    <p class="card-text">
+                        Cambia el estado y organiza tu trabajo.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">📊 Productividad</h5>
+                    <p class="card-text">
+                        Mantén control de tus pendientes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

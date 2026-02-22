@@ -15,6 +15,8 @@ builder.Services.AddHttpClient("Api", client =>
 builder.Services.AddScoped<TareaApiService>();
 
 
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 var app = builder.Build();
 

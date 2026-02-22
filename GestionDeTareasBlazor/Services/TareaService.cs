@@ -11,22 +11,25 @@ namespace GestionDeTareas.Blazor.Services
             _http = factory.CreateClient("Api");
         }
 
-        public async Task<List<TareaCreateDto>> GetTareasAsync()
+       
+        public async Task<List<TareaReadDto>> GetTareasAsync()
         {
-            return await _http.GetFromJsonAsync<List<TareaCreateDto>>("api/tareas")
-                   ?? new List<TareaCreateDto>();
+            return await _http.GetFromJsonAsync<List<TareaReadDto>>("api/tareas")
+                   ?? new List<TareaReadDto>();
         }
 
-       
+      
         public async Task<bool> CreateTareaAsync(TareaCreateDto nuevaTarea)
         {
             var response = await _http.PostAsJsonAsync("api/tareas", nuevaTarea);
+            return response.IsSuccessStatusCode;
+        }
 
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            return false;
+        
+        public async Task<bool> DeleteTareaAsync(int id)
+        {
+            var response = await _http.DeleteAsync($"api/tareas/{id}");
+            return response.IsSuccessStatusCode;
         }
     }
 }
