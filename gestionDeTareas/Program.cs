@@ -5,39 +5,47 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ?? Controllers
-builder.Services.AddControllers();
+// Configurar Puerto para Render
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
-// ?? Swagger (NO OpenApi mínimo)
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ?? DbContext
+// CORS - IMPORTANTE
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-// ?? Services
 builder.Services.AddScoped<ITareaService, TareaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 
-// ?? Swagger en desarrollo
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger habilitado siempre para que puedas probar en Render
+app.UseSwagger();
+app.UseSwaggerUI();
 
-// ?? Middleware
+// Middleware
 app.UseHttpsRedirection();
-app.UseAuthorization();
 
-// ?? Controllers
+// Usar CORS antes de Authorization
+app.UseCors("AllowAll");
+
+app.UseAuthorization();
 app.MapControllers();
 
-// ?? Redirigir raíz a Swagger
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.Run();
