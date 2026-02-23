@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS - IMPORTANTE
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -33,19 +33,23 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 
-// Swagger habilitado siempre para que puedas probar en Render
+
+
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Middleware
 app.UseHttpsRedirection();
-
-// Usar CORS antes de Authorization
 app.UseCors("AllowAll");
-
 app.UseAuthorization();
+
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+
 app.MapControllers();
 
-app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapFallbackToFile("index.html");
 
 app.Run();
