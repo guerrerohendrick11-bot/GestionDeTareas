@@ -45,9 +45,13 @@ app.UseRouting();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.UseRouting();
+
 app.MapControllers();
 
 
-app.MapFallbackToFile("index.html"); 
+app.MapFallbackToFile("/index.html");
 
 app.Run();
