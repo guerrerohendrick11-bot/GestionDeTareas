@@ -1,37 +1,35 @@
-# 1. ETAPA DE COMPILACIÓN DEL FRONTEND (Blazor)
+# 1. ETAPA DE CONSTRUCCIÓN DEL FRONTEND
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-frontend
 WORKDIR /src
-# Copiamos el archivo de proyecto del Frontend
+# COINCIDENCIA DE CARPETAS: Verifica que se llame exactamente "GestionDeTareasBlazor"
 COPY ["GestionDeTareasBlazor/GestionDeTareasBlazor.csproj", "GestionDeTareasBlazor/"]
 RUN dotnet restore "GestionDeTareasBlazor/GestionDeTareasBlazor.csproj"
-# Copiamos el resto de archivos y publicamos
 COPY GestionDeTareasBlazor/ GestionDeTareasBlazor/
+# Publicamos el frontend
 RUN dotnet publish "GestionDeTareasBlazor/GestionDeTareasBlazor.csproj" -c Release -o /app/frontend
 
-# 2. ETAPA DE COMPILACIÓN DEL BACKEND (API)
+# 2. ETAPA DE CONSTRUCCIÓN DEL BACKEND
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-backend
 WORKDIR /src
-# Copiamos el archivo de proyecto del Backend
+# COINCIDENCIA DE CARPETAS: Verifica que se llame "gestionDeTareas"
 COPY ["gestionDeTareas/gestionDeTareas.csproj", "gestionDeTareas/"]
 RUN dotnet restore "gestionDeTareas/gestionDeTareas.csproj"
-# Copiamos el resto de archivos y publicamos
 COPY gestionDeTareas/ gestionDeTareas/
 RUN dotnet publish "gestionDeTareas/gestionDeTareas.csproj" -c Release -o /app/backend
 
-# 3. IMAGEN FINAL (La que corre en Render)
+# 3. IMAGEN FINAL (La que tienes tú)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 
-# Copiamos los archivos ejecutables del Backend
+# Copiamos el ejecutable del Backend
 COPY --from=build-backend /app/backend .
 
-# COPIAMOS EL FRONTEND DENTRO DEL BACKEND
-# Esto hace que la API pueda "servir" tu página de Blazor
+# Copiamos el contenido de wwwroot del frontend al wwwroot del backend
 COPY --from=build-frontend /app/frontend/wwwroot ./wwwroot
 
 # Configuración de puerto para Render
 ENV PORT=8080
 EXPOSE 8080
 
-# Ejecutamos la DLL del Backend
+# IMPORTANTE: El nombre debe ser exacto al de tu proyecto .csproj
 ENTRYPOINT ["dotnet", "gestionDeTareas.dll"]
