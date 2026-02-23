@@ -1,35 +1,24 @@
-# 1. ETAPA DE CONSTRUCCIÓN DEL FRONTEND
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-frontend
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-# COINCIDENCIA DE CARPETAS: Verifica que se llame exactamente "GestionDeTareasBlazor"
-COPY ["GestionDeTareasBlazor/GestionDeTareasBlazor.csproj", "GestionDeTareasBlazor/"]
-RUN dotnet restore "GestionDeTareasBlazor/GestionDeTareasBlazor.csproj"
-COPY GestionDeTareasBlazor/ GestionDeTareasBlazor/
-# Publicamos el frontend
-RUN dotnet publish "GestionDeTareasBlazor/GestionDeTareasBlazor.csproj" -c Release -o /app/frontend
 
-# 2. ETAPA DE CONSTRUCCIÓN DEL BACKEND
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-backend
-WORKDIR /src
-# COINCIDENCIA DE CARPETAS: Verifica que se llame "gestionDeTareas"
+# Copiamos los archivos de proyecto
 COPY ["gestionDeTareas/gestionDeTareas.csproj", "gestionDeTareas/"]
-RUN dotnet restore "gestionDeTareas/gestionDeTareas.csproj"
-COPY gestionDeTareas/ gestionDeTareas/
-RUN dotnet publish "gestionDeTareas/gestionDeTareas.csproj" -c Release -o /app/backend
+COPY ["GestionDeTareasBlazor/GestionDeTareasBlazor.csproj", "GestionDeTareasBlazor/"]
 
-# 3. IMAGEN FINAL (La que tienes tú)
+# Restauramos
+RUN dotnet restore "gestionDeTareas/gestionDeTareas.csproj"
+
+# Copiamos todo y publicamos el Backend
+COPY . .
+WORKDIR "/src/gestionDeTareas"
+RUN dotnet publish "gestionDeTareas.csproj" -c Release -o /app/publish
+
+# Imagen final
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
+COPY --from=build /app/publish .
+COPY --from=build /src/GestionDeTareasBlazor/wwwroot ./wwwroot
 
-# Copiamos el ejecutable del Backend
-COPY --from=build-backend /app/backend .
-
-# Copiamos el contenido de wwwroot del frontend al wwwroot del backend
-COPY --from=build-frontend /app/frontend/wwwroot ./wwwroot
-
-# Configuración de puerto para Render
 ENV PORT=8080
 EXPOSE 8080
-
-# IMPORTANTE: El nombre debe ser exacto al de tu proyecto .csproj
 ENTRYPOINT ["dotnet", "gestionDeTareas.dll"]
