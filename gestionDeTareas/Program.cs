@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar Puerto para Render
+
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -40,16 +40,14 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); 
+app.UseRouting();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
-
 app.MapControllers();
 
-app.MapFallbackToFile("index.html");
+
+app.MapFallbackToFile("index.html"); 
 
 app.Run();
