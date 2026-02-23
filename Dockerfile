@@ -2,24 +2,27 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Copiamos TODOS los archivos de la solución para que las referencias funcionen
+# Copiamos todo el código
 COPY . .
 
-# Restauramos las dependencias de toda la solución
+# Restauramos dependencias
 RUN dotnet restore "gestionDeTareas/gestionDeTareas.csproj"
 
-# Publicamos el Backend desde la RAÍZ (esto es vital para que vea al Frontend)
+# --- EL TRUCO MÁGICO: Borramos los archivos duplicados del frontend ---
+# Esto evita el error NETSDK1152 de duplicados
+RUN rm -f GestionDeTareasBlazor/appsettings.json GestionDeTareasBlazor/appsettings.Development.json
+
+# Ahora publicamos el Backend sin conflictos
 RUN dotnet publish "gestionDeTareas/gestionDeTareas.csproj" -c Release -o /app/publish
 
-# 2. Imagen final para correr la app
+# 2. Imagen final
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 
 # Traemos lo publicado
 COPY --from=build /app/publish .
 
-# Copiamos los archivos estáticos (CSS, imágenes)
-# Asegúrate de que el nombre de la carpeta sea exacto
+# Copiamos los archivos estáticos (CSS, etc)
 COPY --from=build /src/GestionDeTareasBlazor/wwwroot ./wwwroot
 
 ENV PORT=8080
