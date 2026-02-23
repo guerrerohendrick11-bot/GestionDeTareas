@@ -3,16 +3,22 @@ using gestionDeTareas.Services;
 using gestionDeTareas.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 
+using GestionDeTareasBlazor.Components;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 builder.Services.AddCors(options =>
 {
@@ -31,27 +37,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ITareaService, TareaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
+
 var app = builder.Build();
 
 
-
-
-app.UseSwagger();
-app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles(); 
 app.UseRouting();
 app.UseCors("AllowAll");
+app.UseAntiforgery();
 app.UseAuthorization();
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
-app.UseRouting();
 
 app.MapControllers();
 
 
-app.MapFallbackToFile("/index.html");
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();
